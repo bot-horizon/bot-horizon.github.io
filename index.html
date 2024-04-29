@@ -1,1 +1,219 @@
-Coming soon ;)
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Horizon Embed Generator (TEST)</title>
+  </head>
+  <body>
+    <div class="main">
+      <div class="container">
+        <form id="discordEmbedForm">
+          <div class="section">
+            <label for="authorName">Author Name:</label>
+            <input type="text" id="authorName" required /><br />
+          </div>
+
+          <div class="section">
+            <label for="authorUrl">Author URL:</label>
+            <input type="text" id="authorUrl" /><br />
+          </div>
+
+          <div class="section">
+            <label for="authorIconUrl">Author Icon URL:</label>
+            <input type="text" id="authorIconUrl" /><br />
+          </div>
+
+          <hr color="#c09da7" />
+
+          <div class="section">
+            <label for="title">Title:</label>
+            <input type="text" id="title" required /><br />
+          </div>
+
+          <div class="section">
+            <label for="titleUrl">Title URL:</label>
+            <input type="text" id="titleUrl" /><br />
+          </div>
+
+          <div class="section">
+            <label for="description">Description:</label>
+            <textarea id="description" rows="4" cols="50" required></textarea><br />
+          </div>
+
+          <hr color="#c09da7" />
+
+          <div class="section">
+            <label for="color">Color:</label>
+            <input type="color" id="color" value="#00b0f4" /><br />
+          </div>
+
+          <div class="section">
+            <label for="imageUrl">Image URL:</label>
+            <input type="text" id="imageUrl" /><br />
+          </div>
+
+          <div class="section">
+            <label for="thumbnailUrl">Thumbnail URL:</label>
+            <input type="text" id="thumbnailUrl" /><br />
+          </div>
+
+          <div class="section">
+            <label for="footerText">Footer Text:</label>
+            <input type="text" id="footerText" /><br />
+          </div>
+
+          <div class="section">
+            <label for="footerIconUrl">Footer Icon URL:</label>
+            <input type="text" id="footerIconUrl" /><br />
+          </div>
+
+          <div class="section">
+            <label for="timestamp">Timestamp:</label>
+            <input type="text" id="timestamp" /><br />
+          </div>
+
+          <hr color="#c09da7" />
+
+          <div id="additionalFields">
+            <!-- Additional fields will be added here dynamically -->
+          </div>
+
+          <button type="button" onclick="addNewField()">Add New Field</button><br />
+
+          <button type="button" onclick="sendEmbedCode()">Generate Embed Code</button>
+        </form>
+
+        <!-- <h2>Generated Embed Code</h2>
+      <pre id="generatedCode"></pre> -->
+      </div>
+    </div>
+    <script>
+      function addNewField() {
+        const additionalFields = document.getElementById("additionalFields");
+        const newField = document.createElement("div");
+        newField.innerHTML = `
+        <textarea id="field" rows="4" cols="50" required></textarea>
+        <textarea id="field" rows="4" cols="50" required></textarea>
+            `;
+        additionalFields.appendChild(newField);
+      }
+
+      function generateEmbedCode() {
+        const authorName = document.getElementById("authorName").value;
+        const authorUrl = document.getElementById("authorUrl").value;
+        const authorIconUrl = document.getElementById("authorIconUrl").value;
+        const title = document.getElementById("title").value;
+        const titleUrl = document.getElementById("titleUrl").value;
+        const description = document.getElementById("description").value;
+        const color = document.getElementById("color").value;
+        const imageUrl = document.getElementById("imageUrl").value;
+        const thumbnailUrl = document.getElementById("thumbnailUrl").value;
+        const footerText = document.getElementById("footerText").value;
+        const footerIconUrl = document.getElementById("footerIconUrl").value;
+        const timestamp = document.getElementById("timestamp").value;
+
+        const additionalFields = [];
+        const additionalFieldsDivs = document.querySelectorAll("#additionalFields > div");
+        additionalFieldsDivs.forEach((fieldDiv) => {
+          const fieldName = fieldDiv.querySelector('input[name="fieldName"]').value;
+          const fieldValue = fieldDiv.querySelector('input[name="fieldValue"]').value;
+          additionalFields.push({ name: fieldName, value: fieldValue });
+        });
+
+        const embed = {
+          author: {
+            name: authorName,
+            url: authorUrl || undefined, // Exclude if empty
+            icon_url: authorIconUrl || undefined, // Exclude if empty
+          },
+          title: title,
+          url: titleUrl || undefined, // Exclude if empty
+          description: description,
+          color: color,
+          image: {
+            url: imageUrl || undefined, // Exclude if empty
+          },
+          thumbnail: {
+            url: thumbnailUrl || undefined, // Exclude if empty
+          },
+          footer: {
+            text: footerText,
+            icon_url: footerIconUrl || undefined, // Exclude if empty
+          },
+          timestamp: timestamp || undefined, // Exclude if empty
+          fields: additionalFields.length > 0 ? additionalFields : undefined, // Exclude if empty
+        };
+
+        //const generatedCode = document.getElementById("generatedCode");
+        return JSON.stringify(embed, null, 2);
+      }
+    </script>
+
+    <script>
+      async function sendEmbedCode() {
+        const generatedCode = generateEmbedCode();
+        // const response = await fetch("http://localhost:2252/postEmbedCode", {
+        const response = await fetch("http://laser.revivehost.net:2252/postEmbedCode", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ code: generatedCode }),
+        });
+        const data = await response.json();
+        if (data.success) {
+          alert("Embed code saved. Combination: " + data.combination);
+        } else {
+          alert("Failed to save embed code.");
+        }
+      }
+
+      //cookies
+
+      function genCode() {
+        // clearTable();
+        outputText.innerHTML = generateTableData();
+      }
+
+      function saveCode() {
+        const outputCode = generateTableData();
+        setCookie("codeSave", encodeCookieValue(outputCode));
+        alertBox("Table has been saved!");
+      }
+
+      function loadCode() {
+        const codeSave = decodeCookieValue(getCookie("codeSave"));
+        loadTableData(codeSave);
+        alertBox("Table has been loaded!");
+      }
+
+      function setCookie(name, value) {
+        document.cookie = name + "=" + value + ";path=/";
+      }
+
+      function getCookie(name) {
+        const cookieName = name + "=";
+        const decodedCookie = decodeURIComponent(document.cookie);
+        const cookieArray = decodedCookie.split(";");
+
+        for (let i = 0; i < cookieArray.length; i++) {
+          let cookie = cookieArray[i];
+          while (cookie.charAt(0) === " ") {
+            cookie = cookie.substring(1);
+          }
+          if (cookie.indexOf(cookieName) === 0) {
+            return cookie.substring(cookieName.length, cookie.length);
+          }
+        }
+
+        return "";
+      }
+
+      function deleteCookie(name) {
+        document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      }
+    </script>
+  </body>
+</html>

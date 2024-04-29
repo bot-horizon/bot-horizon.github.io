@@ -1,0 +1,81 @@
+@import url("https://fonts.googleapis.com/css2?family=Anek+Devanagari:wght@100..800&display=swap");
+
+:root {
+  --purple-color: #c09da7;
+  --yellow-color: #ffe6b1;
+}
+
+body,
+html {
+  padding: 0;
+  margin: 0;
+}
+
+* {
+  outline: none;
+}
+
+body {
+  background-color: rgb(31, 31, 31);
+  color: var(--yellow-color);
+  font-family: "Anek Devanagari", sans-serif;
+  overflow-y: scroll;
+}
+
+div.container {
+  left: 0;
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  box-shadow: var(--purple-color) 0px 0px 10px;
+  border-radius: 10px;
+  /* border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px; */
+  background-color: rgba(128, 128, 128, 0.1);
+  font-size: 23px;
+}
+
+input,
+textarea,
+button {
+  background-color: #c0b89d4d;
+  border: none;
+  padding: 10px 20px;
+  margin-top: 10px;
+  color: var(--purple-color);
+  font-size: 15px;
+  border-radius: 7px;
+  outline: 1px solid var(--purple-color);
+  font-weight: bold;
+}
+
+hr {
+  opacity: 0;
+}
+
+button {
+  width: 90%;
+  color: var(--purple-color);
+}
+
+button:hover {
+  cursor: pointer;
+  background-color: #c0b89d28;
+}
+
+div.main {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  width: 90vw;
+  height: 90vh;
+}
+
+div.section > input {
+  width: 50%;
+}
