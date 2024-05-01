@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Discord Embed Code Generator</title>
+  </head>
+  <body>
+    <div class="main">
+      <div class="container">
+        <p>Discord Embed Code Generator</p>
+        <form id="discordEmbedForm">
+          <label for="authorName">Author Name:</label>
+          <input type="text" id="authorName" required /><br />
+
+          <label for="authorUrl">Author URL:</label>
+          <input type="text" id="authorUrl" /><br />
+
+          <label for="authorIconUrl">Author Icon URL:</label>
+          <input type="text" id="authorIconUrl" /><br />
+
+          <label for="title">Title:</label>
+          <input type="text" id="title" required /><br />
+
+          <label for="titleUrl">Title URL:</label>
+          <input type="text" id="titleUrl" /><br />
+
+          <label for="description">Description:</label><br />
+          <textarea id="description" rows="4" cols="50" required></textarea><br />
+
+          <label for="color">Color:</label>
+          <input type="color" id="color" value="#00b0f4" /><br />
+
+          <label for="imageUrl">Image URL:</label>
+          <input type="text" id="imageUrl" /><br />
+
+          <label for="thumbnailUrl">Thumbnail URL:</label>
+          <input type="text" id="thumbnailUrl" /><br />
+
+          <label for="footerText">Footer Text:</label>
+          <input type="text" id="footerText" /><br />
+
+          <label for="footerIconUrl">Footer Icon URL:</label>
+          <input type="text" id="footerIconUrl" /><br />
+
+          <label for="timestamp">Timestamp:</label>
+          <input type="text" id="timestamp" /><br />
+
+          <div id="additionalFields">
+            <!-- Additional fields will be added here dynamically -->
+          </div>
+
+          <button type="button" onclick="addNewField()">Add New Field</button><br />
+
+          <button type="button" onclick="sendEmbedCode()">Generate Embed Code</button>
+        </form>
+
+        <hr />
+
+        <pre id="generatedCode"></pre>
+      </div>
+      <div class="preview">
+        <h1>Coming Soon</h1>
+      </div>
+    </div>
+
+    <script>
+      function addNewField() {
+        const additionalFields = document.getElementById("additionalFields");
+        const newField = document.createElement("div");
+        newField.innerHTML = `
+              <hr>
+              <label for="fieldName">Field Name:</label>
+              <input type="text" name="fieldName" required>
+              <br>
+              <label for="fieldValue">Field Value:</label>
+              <input type="text" name="fieldValue" required>
+              <br>
+          `;
+        additionalFields.appendChild(newField);
+      }
+
+      function generateEmbedCode() {
+        const authorName = document.getElementById("authorName").value;
+        const authorUrl = document.getElementById("authorUrl").value;
+        const authorIconUrl = document.getElementById("authorIconUrl").value;
+        const title = document.getElementById("title").value;
+        const titleUrl = document.getElementById("titleUrl").value;
+        const description = document.getElementById("description").value;
+        const color = document.getElementById("color").value;
+        const imageUrl = document.getElementById("imageUrl").value;
+        const thumbnailUrl = document.getElementById("thumbnailUrl").value;
+        const footerText = document.getElementById("footerText").value;
+        const footerIconUrl = document.getElementById("footerIconUrl").value;
+        const timestamp = document.getElementById("timestamp").value;
+
+        const additionalFields = [];
+        const additionalFieldsDivs = document.querySelectorAll("#additionalFields > div");
+        additionalFieldsDivs.forEach((fieldDiv) => {
+          const fieldName = fieldDiv.querySelector('input[name="fieldName"]').value;
+          const fieldValue = fieldDiv.querySelector('input[name="fieldValue"]').value;
+          additionalFields.push({ name: fieldName, value: fieldValue });
+        });
+
+        const embed = {
+          author: {
+            name: authorName,
+            url: authorUrl || undefined, // Exclude if empty
+            icon_url: authorIconUrl || undefined, // Exclude if empty
+          },
+          title: title,
+          url: titleUrl || undefined, // Exclude if empty
+          description: description,
+          color: color,
+          image: {
+            url: imageUrl || undefined, // Exclude if empty
+          },
+          thumbnail: {
+            url: thumbnailUrl || undefined, // Exclude if empty
+          },
+          footer: {
+            text: footerText,
+            icon_url: footerIconUrl || undefined, // Exclude if empty
+          },
+          timestamp: timestamp || undefined, // Exclude if empty
+          fields: additionalFields.length > 0 ? additionalFields : undefined, // Exclude if empty
+        };
+
+        const generatedCode = document.getElementById("generatedCode");
+        return JSON.stringify(embed, null, 2);
+      }
+    </script>
+
+    <script>
+      async function sendEmbedCode() {
+        const generatedCode = generateEmbedCode();
+        const response = await fetch("http://embed.horizonbot.info:2252/postEmbedCode", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ code: generatedCode }),
+        });
+        const data = await response.json();
+        if (data.success) {
+          alert("Embed code saved. Combination: " + data.combination);
+        } else {
+          alert("Failed to save embed code.");
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -5,10 +5,24 @@
   --yellow-color: #ffe6b1;
 }
 
+::-webkit-scrollbar {
+  width: 0px;
+}
+
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px rgb(0, 0, 0);
+}
+
+::-webkit-scrollbar-thumb {
+  background: black;
+  transition: 1s;
+}
+
 body,
 html {
   padding: 0;
   margin: 0;
+  user-select: none;
 }
 
 * {
@@ -28,15 +42,15 @@ div.container {
   width: 50%;
   height: 100%;
   display: flex;
-  justify-content: center;
   flex-direction: column;
   text-align: center;
   box-shadow: var(--purple-color) 0px 0px 10px;
-  border-radius: 10px;
+  /*border-radius: 10px;*/
   /* border-top-right-radius: 0px;
   border-bottom-right-radius: 0px; */
   background-color: rgba(128, 128, 128, 0.1);
   font-size: 23px;
+  overflow-y: scroll;
 }
 
 input,
@@ -57,6 +71,14 @@ hr {
   opacity: 0;
 }
 
+p {
+  margin-top: 70px;
+  font-weight: bold;
+  font-size: 40px;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
 button {
   width: 90%;
   color: var(--purple-color);
@@ -73,9 +95,29 @@ div.main {
   top: 50%;
   left: 50%;
   width: 90vw;
-  height: 90vh;
+  height: 100%;
 }
 
 div.section > input {
   width: 50%;
+}
+
+div.preview {
+  right: 0;
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: var(--purple-color) 0px 0px 10px;
+  /*border-radius: 10px;*/
+  /* border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px; */
+  background-color: rgba(128, 128, 128, 0.1);
+  font-size: 23px;
+  overflow-y: scroll;
+  background-color: rgba(255, 0, 0, 0.1);
 }
