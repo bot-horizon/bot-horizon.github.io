@@ -148,7 +148,7 @@
 
       async function sendEmbedCode() {
         const generatedCode = generateEmbedCode();
-        const response = await fetch("https://lasrr.de", {
+        const response = await fetch("http://embed.horizonbot.info:2252/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
