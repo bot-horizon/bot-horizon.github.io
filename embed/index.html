@@ -75,7 +75,7 @@
               <input type="text" name="fieldName" required>
               <br>
               <label for="fieldValue">Field Value:</label>
-              <input type="text" name="fieldValue" required>
+              <textarea type="text" name="fieldValue" required></textarea>
               <br>
           `;
         additionalFields.appendChild(newField);
@@ -99,7 +99,7 @@
         const additionalFieldsDivs = document.querySelectorAll("#additionalFields > div");
         additionalFieldsDivs.forEach((fieldDiv) => {
           const fieldName = fieldDiv.querySelector('input[name="fieldName"]').value.trim();
-          const fieldValue = fieldDiv.querySelector('input[name="fieldValue"]').value.trim();
+          const fieldValue = fieldDiv.querySelector('textarea[name="fieldValue"]').value.trim();
           if (fieldName && fieldValue) {
             additionalFields.push({ name: fieldName, value: fieldValue });
           }
@@ -145,24 +145,31 @@
         console.log("Generated Embed Code:", generatedCode);
         return generatedCode;
       }
-    </script>
 
-    <script>
       async function sendEmbedCode() {
         const generatedCode = generateEmbedCode();
-        const response = await fetch("http://embed.horizonbot.info:2252/postEmbedCode", {
+        const response = await fetch("https://lasrr.de", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ code: generatedCode }),
-        });
-        const data = await response.json();
-        if (data.success) {
-          alert("Embed code saved. Combination: " + data.combination);
-        } else {
-          alert("Failed to save embed code.");
-        }
+          body: JSON.stringify({
+            key1: "value1",
+            key2: "value2",
+            code: generatedCode,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              alert("Embed code saved. Combination: " + data.combination);
+            } else {
+              alert("Failed to save embed code.");
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
       }
     </script>
   </body>
