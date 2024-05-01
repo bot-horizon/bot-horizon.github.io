@@ -82,53 +82,68 @@
       }
 
       function generateEmbedCode() {
-        const authorName = document.getElementById("authorName").value;
-        const authorUrl = document.getElementById("authorUrl").value;
-        const authorIconUrl = document.getElementById("authorIconUrl").value;
-        const title = document.getElementById("title").value;
-        const titleUrl = document.getElementById("titleUrl").value;
-        const description = document.getElementById("description").value;
-        const color = document.getElementById("color").value;
-        const imageUrl = document.getElementById("imageUrl").value;
-        const thumbnailUrl = document.getElementById("thumbnailUrl").value;
-        const footerText = document.getElementById("footerText").value;
-        const footerIconUrl = document.getElementById("footerIconUrl").value;
-        const timestamp = document.getElementById("timestamp").value;
+        const authorName = document.getElementById("authorName").value.trim();
+        const authorUrl = document.getElementById("authorUrl").value.trim();
+        const authorIconUrl = document.getElementById("authorIconUrl").value.trim();
+        const title = document.getElementById("title").value.trim();
+        const titleUrl = document.getElementById("titleUrl").value.trim();
+        const description = document.getElementById("description").value.trim();
+        const color = document.getElementById("color").value.trim();
+        const imageUrl = document.getElementById("imageUrl").value.trim();
+        const thumbnailUrl = document.getElementById("thumbnailUrl").value.trim();
+        const footerText = document.getElementById("footerText").value.trim();
+        const footerIconUrl = document.getElementById("footerIconUrl").value.trim();
+        const timestamp = document.getElementById("timestamp").value.trim();
 
         const additionalFields = [];
         const additionalFieldsDivs = document.querySelectorAll("#additionalFields > div");
         additionalFieldsDivs.forEach((fieldDiv) => {
-          const fieldName = fieldDiv.querySelector('input[name="fieldName"]').value;
-          const fieldValue = fieldDiv.querySelector('input[name="fieldValue"]').value;
-          additionalFields.push({ name: fieldName, value: fieldValue });
+          const fieldName = fieldDiv.querySelector('input[name="fieldName"]').value.trim();
+          const fieldValue = fieldDiv.querySelector('input[name="fieldValue"]').value.trim();
+          if (fieldName && fieldValue) {
+            additionalFields.push({ name: fieldName, value: fieldValue });
+          }
         });
 
-        const embed = {
-          author: {
-            name: authorName,
-            url: authorUrl || undefined, // Exclude if empty
-            icon_url: authorIconUrl || undefined, // Exclude if empty
-          },
-          title: title,
-          url: titleUrl || undefined, // Exclude if empty
-          description: description,
-          color: color,
-          image: {
-            url: imageUrl || undefined, // Exclude if empty
-          },
-          thumbnail: {
-            url: thumbnailUrl || undefined, // Exclude if empty
-          },
-          footer: {
-            text: footerText,
-            icon_url: footerIconUrl || undefined, // Exclude if empty
-          },
-          timestamp: timestamp || undefined, // Exclude if empty
-          fields: additionalFields.length > 0 ? additionalFields : undefined, // Exclude if empty
-        };
+        const embed = {};
 
-        const generatedCode = document.getElementById("generatedCode");
-        return JSON.stringify(embed, null, 2);
+        if (authorName || authorUrl || authorIconUrl) {
+          embed.author = {
+            name: authorName || undefined,
+            url: authorUrl || undefined,
+            icon_url: authorIconUrl || undefined,
+          };
+        }
+
+        embed.title = title;
+        embed.url = titleUrl || undefined;
+        embed.description = description;
+        embed.color = color;
+
+        if (imageUrl) {
+          embed.image = { url: imageUrl };
+        }
+
+        if (thumbnailUrl) {
+          embed.thumbnail = { url: thumbnailUrl };
+        }
+
+        if (footerText || footerIconUrl) {
+          embed.footer = {
+            text: footerText || undefined,
+            icon_url: footerIconUrl || undefined,
+          };
+        }
+
+        embed.timestamp = timestamp || undefined;
+
+        if (additionalFields.length > 0) {
+          embed.fields = additionalFields;
+        }
+
+        const generatedCode = JSON.stringify(embed, null, 2);
+        console.log("Generated Embed Code:", generatedCode);
+        return generatedCode;
       }
     </script>
 
